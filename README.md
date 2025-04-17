@@ -1,15 +1,16 @@
 
 # 🧑‍💼 Job Portal - MERN Stack Job Search & Recruitment Platform
 
-Job Portal is a full-featured MERN stack application built to streamline the job-seeking and hiring process. Whether you're a job seeker browsing for the perfect opportunity or a recruiter looking for top-tier talent, this platform provides a seamless, modern, and AI-enhanced experience.
+**Job Portal** is a full-featured MERN stack application built to streamline the job-seeking and hiring process. Whether you're a job seeker browsing for the perfect opportunity or a recruiter looking for top-tier talent, this platform provides a seamless, modern, and AI-enhanced experience.
 It allows users to post jobs, search for opportunities, apply, and manage applications. Companies can create listings, filter applicants, and manage recruitment all in one place.
----
+
 
 ## 🚀 Live Demo
 
 - **Live Demo:** [Demo](https://job-poral-sigma.vercel.app)
-
+- 
 ---
+
 
 ## 📌 Features
 
@@ -41,7 +42,7 @@ It allows users to post jobs, search for opportunities, apply, and manage applic
 - **Dynamic job filtering** and smooth UI transitions.
 - Toast notifications, modern UI, and slick animations.
 
----
+
 
 ## 🛠️ Tech Stack
 
@@ -88,7 +89,6 @@ It allows users to post jobs, search for opportunities, apply, and manage applic
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change. Let's make job-hunting easier together. 🚀
 
----
 
 ## 📜 License
 
