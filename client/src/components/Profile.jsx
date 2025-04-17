@@ -1,100 +1,171 @@
-import React, { useState } from 'react'
-import Navbar from './shared/Navbar'
-import { Avatar, AvatarImage } from './ui/avatar'
-import { Button } from './ui/button'
-import { Contact, Mail, Pen } from 'lucide-react'
-import { Badge } from './ui/badge'
+import React, { useEffect, useState } from 'react'
+import {
+    Dialog, DialogContent, DialogFooter,
+    DialogHeader, DialogTitle
+} from './ui/dialog'
 import { Label } from './ui/label'
-import AppliedJobTable from './AppliedJobTable'
-import UpdateProfileDialog from './UpdateProfileDialog'
-import { useSelector } from 'react-redux'
-import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
+import { Input } from './ui/input'
+import { Button } from './ui/button'
+import { Loader2 } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { USER_API_END_POINT } from '@/utils/constant'
+import { setUser } from '@/redux/authSlice'
+import { toast } from 'sonner'
 
-const isResume = true;
-
-const Profile = () => {
-    useGetAppliedJobs();
-    const [open, setOpen] = useState(false);
+const UpdateProfileDialog = ({ open, setOpen }) => {
+    const [loading, setLoading] = useState(false);
     const { user } = useSelector(store => store.auth);
-   console.log("user",user)
+    const dispatch = useDispatch();
+
+    const initialState = {
+        fullname: user?.fullname || "",
+        email: user?.email || "",
+        phoneNumber: user?.phoneNumber || "",
+        bio: user?.profile?.bio || "",
+        skills: user?.profile?.skills?.join(', ') || "",
+        file: user?.profile?.resume || ""
+    };
+
+    const [input, setInput] = useState(initialState);
+
+    useEffect(() => {
+        if (!open) {
+            setInput(initialState);
+        }
+    }, [open]);
+
+    const changeEventHandler = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
+    }
+
+    const fileChangeHandler = (e) => {
+        const file = e.target.files?.[0];
+        setInput({ ...input, file });
+    }
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("fullname", input.fullname);
+        formData.append("email", input.email);
+        formData.append("phoneNumber", input.phoneNumber);
+        formData.append("bio", input.bio);
+        formData.append("skills", input.skills);
+        if (input.file) {
+            formData.append("file", input.file);
+        }
+
+        try {
+            setLoading(true);
+            const res = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+
+            if (res.data.success) {
+                dispatch(setUser(res.data.user));
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.message || "Something went wrong!");
+        } finally {
+            setLoading(false);
+        }
+
+        setOpen(false);
+    }
+
     return (
-        <div className="bg-white min-h-screen">
-            <Navbar />
-            <div className="max-w-4xl mx-auto bg-white border border-gray-200 shadow-lg shadow-slate-200 rounded-2xl my-5 p-4 md:p-8">
-                {/* Header Section */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <Avatar className="h-24 w-24">
-                            <AvatarImage src={user.profile.profilePhoto || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"} alt="profile" />
-                        </Avatar>
-                        <div className="text-center sm:text-left">
-                            <h1 className="font-medium text-xl break-words">{user?.fullname}</h1>
-                            <p className="text-gray-600">{user?.profile?.bio}</p>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Update Profile</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={submitHandler}>
+                    <div className='grid gap-4 py-4'>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="fullname" className="text-right">Name</Label>
+                            <Input
+                                id="fullname"
+                                name="fullname"
+                                type="text"
+                                value={input.fullname}
+                                onChange={changeEventHandler}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="email" className="text-right">Email</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={input.email}
+                                onChange={changeEventHandler}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="phoneNumber" className="text-right">Number</Label>
+                            <Input
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                type="text"
+                                value={input.phoneNumber}
+                                onChange={changeEventHandler}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="bio" className="text-right">Bio</Label>
+                            <Input
+                                id="bio"
+                                name="bio"
+                                value={input.bio}
+                                onChange={changeEventHandler}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="skills" className="text-right">Skills</Label>
+                            <Input
+                                id="skills"
+                                name="skills"
+                                value={input.skills}
+                                onChange={changeEventHandler}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="file" className="text-right">Resume</Label>
+                            <Input
+                                id="file"
+                                name="file"
+                                type="file"
+                                accept="application/pdf"
+                                onChange={fileChangeHandler}
+                                className="col-span-3"
+                            />
                         </div>
                     </div>
-                    <div className="flex justify-center sm:justify-end">
-                        <Button onClick={() => setOpen(true)} variant="outline">
-                            <Pen className="mr-1 h-4 w-4" /> Edit
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Contact Info */}
-                <div className="my-5 space-y-3 text-sm md:text-base">
-                    <div className="flex items-center gap-3">
-                        <Mail className="h-5 w-5 text-blue-500" />
-                        <span className="break-words">{user?.email}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Contact className="h-5 w-5 text-blue-500" />
-                        <span className="break-words">{user?.phoneNumber}</span>
-                    </div>
-                </div>
-
-                {/* Skills */}
-                <div className="my-5">
-                    <h1 className="font-semibold text-lg mb-2">Skills</h1>
-                    <div className="flex flex-wrap gap-2">
+                    <DialogFooter>
                         {
-                            user?.profile?.skills?.length > 0
-                                ? user?.profile?.skills.map((item, index) => (
-                                    <Badge key={index}>{item}</Badge>
-                                ))
-                                : <span className="text-gray-500">NA</span>
+                            loading ? (
+                                <Button className="w-full my-4" disabled>
+                                    <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait
+                                </Button>
+                            ) : (
+                                <Button type="submit" className="w-full my-4">Update</Button>
+                            )
                         }
-                    </div>
-                </div>
-
-                {/* Resume */}
-                <div className="my-5">
-                    <Label className="text-md font-bold">Resume</Label>
-                    
-                    <div className="mt-1">
-                        {
-                            isResume && user?.profile?.resume
-                                ? <a
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href={user?.profile?.resume}
-                                    className="text-blue-600 hover:underline break-all"
-                                >
-                                    {user?.profile?.resumeOriginalname                                    }
-                                </a>
-                                : <span className="text-gray-500">NA</span>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            {/* Applied Jobs Section */}
-            <div className="max-w-4xl mx-auto bg-white border border-gray-200 shadow-lg shadow-slate-200 rounded-2xl my-5 p-4 md:p-8 overflow-x-auto">
-                <h1 className="font-bold text-lg mb-4">Applied Jobs</h1>
-                <AppliedJobTable />
-            </div>
-
-            <UpdateProfileDialog open={open} setOpen={setOpen} />
-        </div>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     )
 }
 
-export default Profile
+export default UpdateProfileDialog;
