@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["https://job-poral-sigma.vercel.app/"],
+  origin: ["https://job-poral-sigma.vercel.app"],
   credentials: true,
 };
 
