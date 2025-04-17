@@ -268,7 +268,7 @@ const JobDescription = () => {
                                                             singleJob?.eligibility?.length > 0 ? (
                                                                         <ul className="text-gray-500 text-sm list-disc list-inside flex flex-wrap gap-x-4 gap-y-1">
                                                                                     {
-                                                                                        singleJob?.eligibility.map((eligibility, index) => (
+                                                                                        singleJob?.eligibility?.map((eligibility, index) => (
                                                                                         <li key={index}>{eligibility}</li>
                                                                                         ))
                                                                                     }  
@@ -306,12 +306,12 @@ const JobDescription = () => {
                                                         singleJob?.detailedDescription?.length > 0 ? (
                                                             <>
                                                                {
-                                                                singleJob?.detailedDescription.map((detail ,indx)=>(
+                                                                singleJob?.detailedDescription?.map((detail ,indx)=>(
                                                                     <div className=' mt-4 '>
-                                                                                    <span className=' opacity-80 text-[15px] font-medium mt-4 '>{detail.heading} : </span>
+                                                                                    <span className=' opacity-80 text-[15px] font-medium mt-4 '>{detail?.heading} : </span>
                                                                                     <ul className='text-gray-500 text-[14.5px] list-disc list-inside '>
                                                                                         {
-                                                                                            detail?.points?.length === 0 ? <li>Not {detail.heading} anything</li> : 
+                                                                                            detail?.points?.length === 0 ? <li>Not {detail?.heading} anything</li> : 
                                                                                             detail?.points?.map((item)=>(
                                                                                                 <li>{item}</li>
                                                                                             ))
@@ -330,7 +330,7 @@ const JobDescription = () => {
                                                                                     <ul className='text-gray-500 text-[14.5px] list-disc list-inside '>
                                                                                         {
                                                                                             singleJob?.requirements?.length === 0 ? <li>Not requirement anything</li> : 
-                                                                                            singleJob?.requirements.map((requirement)=>(
+                                                                                            singleJob?.requirements?.map((requirement)=>(
                                                                                                 <li>{requirement}</li>
                                                                                             ))
                                                                                         }
@@ -397,7 +397,7 @@ const JobDescription = () => {
                                                         <div className=' flex items-center gap-x-2 justify-between  pt-4 border-[1.5px] border-gray-300 rounded-lg '> 
                                                         <div className=' flex flex-col gap-y-2 pl-4'>
                                                             <span className='  font-semibold text-gray-700 text-lg'>Stipend</span>
-                                                            <span className='font-semibold text-gray-700  text-[15px] '>{formatSalaryToINR(singleJob.salary)}{singleJob?.jobType === "Internship" ?   "/month" : ""} </span>
+                                                            <span className='font-semibold text-gray-700  text-[15px] '>{formatSalaryToINR(singleJob?.salary)}{singleJob?.jobType === "Internship" ?   "/month" : ""} </span>
                                                         </div>
                                                         <div className='h-32 w-42'>
                                                             <img src={stipend} alt="Duration" className='  h-full w-full object-fill' />
@@ -556,7 +556,7 @@ const JobDescription = () => {
                                                             singleJob?.eligibility?.length > 0 ? (
                                                                         <ul className="text-gray-500 text-sm list-disc list-inside flex flex-wrap gap-x-4 gap-y-1">
                                                                                     {
-                                                                                        singleJob?.eligibility.map((eligibility, index) => (
+                                                                                        singleJob?.eligibility?.map((eligibility, index) => (
                                                                                         <li key={index}>{eligibility}</li>
                                                                                         ))
                                                                                     }  
